@@ -1,0 +1,52 @@
+import cv2
+from os import listdir
+from os.path import isfile, join
+import numpy
+#simple HOG feature extraction using 64 x 128 image
+
+#1 Step 1 is to decide the size of image patch - for simplicity and faster processing we choose 
+#64x128
+win_size = (64, 128)
+img = cv2.imread("dayImg1.jpg")
+img = cv2.resize(img, win_size)
+#Add images to the list
+
+
+#2 Step2 organize the list of images and perform preprocessing steps in this simple example, we just convert RGB to grayscale
+#list of images
+mypath='/home/deeplearning/Desktop/ReproduceMyThesisInPython/Images'
+onlyfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) ]
+images = numpy.empty(len(onlyfiles), dtype=object)
+for n in range(0, len(onlyfiles)):
+  images[n] = cv2.imread( join(mypath,onlyfiles[n]) )
+  print(onlyfiles[n])
+  #resize images
+  images[n] = cv2.resize(images[n], win_size)
+  images[n] = cv2.cvtColor(images[n], cv2.COLOR_RGB2GRAY)
+  cv2.imshow('image',images[n])
+  cv2.waitKey(0)
+  cv2.destroyAllWindows()
+
+#3 Configure HOG parameters
+blockSize = (16,16)
+blockStride = (8,8)
+cellSize = (8,8)
+nbins = 9
+derivAperture = 1
+winSigma = 4.
+histogramNormType = 0
+L2HysThreshold = 2.0000000000000001e-01
+gammaCorrection = 0
+nlevels = 64
+#4 Extract HOG feature points and show the points
+d = cv2.HOGDescriptor(win_size,blockSize,blockStride,cellSize,nbins,derivAperture,winSigma,
+                        histogramNormType,L2HysThreshold,gammaCorrection,nlevels)
+#5 Compute HOG Descriptor for each image in the list
+print(images[1].shape) # just a check to see if the list was populated properly
+for eachImg in images:
+    hog = d.compute(eachImg)
+    print(hog.shape)
+    print(hog)
+    #print(type(hog))
+    
+
