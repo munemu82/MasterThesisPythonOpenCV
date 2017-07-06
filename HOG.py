@@ -2,7 +2,10 @@ import cv2
 from os import listdir
 from os.path import isfile, join
 import numpy
+from sklearn.neighbors import KNeighborsClassifier
 #simple HOG feature extraction using 64 x 128 image
+#setup global variables
+finalFeatures = []
 
 #1 Step 1 is to decide the size of image patch - for simplicity and faster processing we choose 
 #64x128
@@ -46,7 +49,14 @@ print(images[1].shape) # just a check to see if the list was populated properly
 for eachImg in images:
     hog = d.compute(eachImg)
     print(hog.shape)
-    print(hog)
+    #print(hog[0])
     #print(type(hog))
+    finalFeatures.append(hog)
+print(finalFeatures[0][0])
+numpyMatrix=numpy.array([numpy.array(x) for x in finalFeatures])
+print(numpyMatrix)
+print(type(numpyMatrix))
+print(numpyMatrix.shape)
+y = [0, 0, 1, 1]
     
 
